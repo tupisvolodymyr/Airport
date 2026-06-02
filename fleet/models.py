@@ -9,6 +9,9 @@ class Airport(models.Model):
         related_name='airports'
     )
 
+    class Meta:
+        ordering = ['name' ]
+
     def __str__(self):
         return self.name + ' ' + self.iata_code
 
@@ -17,15 +20,41 @@ class Airplane(models.Model):
     model = models.CharField(max_length=125)
     year = models.IntegerField()
 
-    rows = models.IntegerField()
-    seats_per_row = models.IntegerField()
+    rows = models.PositiveIntegerField()
+    seats_per_row = models.PositiveIntegerField()
 
     airline = models.ForeignKey(
-        'Airline', on_delete=models.PROTECT
+        'Airline',
+        on_delete=models.CASCADE,
+        related_name='airplanes',
+
     )
 
     def __str__(self):
         return self.name + ' ' + self.model + ' ' + self.year
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = "Airplanes"
+
+class AirplaneSeat(models.Model):
+    airplane = models.ForeignKey(
+        'Airplane',
+        on_delete=models.CASCADE,
+        related_name='seats',
+    )
+    row = models.PositiveIntegerField()
+    seat = models.CharField()
+
+    class ClassType(models.TextChoices):
+        BUSINESS = "BUSINESS", "business"
+        ECONOMY = "ECONOMY", "economy"
+
+    class_type = models.CharField(
+        max_length=10,
+        choices=ClassType.choices,
+        default=ClassType.ECONOMY
+    )
 
 
 class Airline(models.Model):
@@ -33,6 +62,11 @@ class Airline(models.Model):
     iata_code = models.CharField(max_length=2, unique=True)
     created_at = models.IntegerField(blank=False, null=False)
 
-    base_airport = models.ForeignKey(
-        'Airport', on_delete=models.PROTECT,
+    airport = models.ManyToManyField(
+        'Airport',
+        related_name='airlines',
+        blank=True,
     )
+
+    def __str__(self):
+        return self.name + ' ' + self.iata_code

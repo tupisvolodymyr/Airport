@@ -55,6 +55,8 @@ INSTALLED_APPS = [
 
     'fleet',
     'locations',
+    'users',
+    'flights'
 
 ]
 
@@ -146,7 +148,10 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Airport API Project',
-    'DESCRIPTION': 'Документація для нашого авіаційного API (Locations & Fleet)',
+    'DESCRIPTION': 'Документація API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+
+AUTH_USER_MODEL = 'users.User'
