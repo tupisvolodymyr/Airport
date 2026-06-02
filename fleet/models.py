@@ -18,7 +18,7 @@ class Airport(models.Model):
 class Airplane(models.Model):
     name = models.CharField(max_length=125)
     model = models.CharField(max_length=125)
-    year = models.IntegerField()
+    year = models.DateTimeField()
 
     rows = models.PositiveIntegerField()
     seats_per_row = models.PositiveIntegerField()
@@ -31,7 +31,7 @@ class Airplane(models.Model):
     )
 
     def __str__(self):
-        return self.name + ' ' + self.model + ' ' + self.year
+        return f"{self.name} ({self.model}) - {self.year}"
 
     class Meta:
         ordering = ['name']
@@ -60,7 +60,7 @@ class AirplaneSeat(models.Model):
 class Airline(models.Model):
     name = models.CharField(max_length=250)
     iata_code = models.CharField(max_length=2, unique=True)
-    created_at = models.IntegerField(blank=False, null=False)
+    founded_year = models.DateTimeField(blank=False, null=False)
 
     airport = models.ManyToManyField(
         'Airport',
