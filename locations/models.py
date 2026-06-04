@@ -18,5 +18,9 @@ class City(models.Model):
         'Country', on_delete=models.CASCADE
     )
 
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'cities'
+
     def __str__(self):
         return self.name
