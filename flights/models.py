@@ -1,4 +1,8 @@
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from decimal import Decimal
 
 
 class FlightStatus(models.TextChoices):
@@ -8,10 +12,12 @@ class FlightStatus(models.TextChoices):
     DELAYED = 'DELAYED', 'delayed'
     CANCELLED = 'CANCELLED', 'cancelled'
 
+
 class BookingStatus(models.TextChoices):
     PENDING = 'PENDING', 'pending'
     CONFIRMED = 'CONFIRMED', 'confirmed'
     CANCELLED = 'CANCELLED', 'cancelled'
+
 
 class TicketStatus(models.TextChoices):
     BOOKED = 'BOOKED', 'booked'
@@ -22,14 +28,11 @@ class TicketStatus(models.TextChoices):
 
 class Flight(models.Model):
     flight_number = models.CharField(max_length=10)
-
     departure_airport = models.ForeignKey(
         'fleet.Airport', on_delete=models.PROTECT,
         related_name='departures'
     )
     departure_time = models.DateTimeField()
-
-
     arrival_airport = models.ForeignKey(
         'fleet.Airport', on_delete=models.PROTECT,
         related_name='arrivals'
@@ -38,7 +41,8 @@ class Flight(models.Model):
 
     ticket_price = models.DecimalField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'), message="Flight ticket price must be greater than 0.")]
     )
     airplane = models.ForeignKey(
         'fleet.Airplane', on_delete=models.PROTECT
@@ -53,14 +57,35 @@ class Flight(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def clean(self):
+        super().clean()
+        if self.departure_time and self.arrival_time:
+            if self.departure_time >= self.arrival_time:
+                raise ValidationError({
+                    'arrival_time': "Arrival time must be later than departure time."
+                })
+            if self.departure_time < timezone.now():
+                raise ValidationError({
+                    'departure_time': "Departure time cannot be in the past. Please enter a current date."
+                })
+            if self.arrival_airport == self.departure_airport:
+                raise ValidationError({
+                    'arrival_airport': "Arrival airport cannot be the same as departure airport."
+                })
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.departure_airport} - {self.arrival_airport}"
+        return f"{self.flight_number}: {self.departure_airport.iata_code} -> {self.arrival_airport.iata_code}"
+
 
 class Booking(models.Model):
-    user_id = models.ForeignKey(
+    user = models.ForeignKey(
         'users.User', on_delete=models.CASCADE,
+        related_name='bookings'
     )
-
     status = models.CharField(
         max_length=10,
         choices=BookingStatus.choices,
@@ -69,12 +94,17 @@ class Booking(models.Model):
     total_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
+        default=Decimal('0.00'),
+        blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Booking {self.id} by {self.user.username} ({self.status})"
+
 
 class Ticket(models.Model):
-    flight_number = models.ForeignKey(
+    flight = models.ForeignKey(
         'flights.Flight',
         on_delete=models.CASCADE,
         related_name='tickets'
@@ -84,15 +114,50 @@ class Ticket(models.Model):
         on_delete=models.CASCADE,
         related_name='tickets'
     )
-    passenger_name = models.ForeignKey(
+    user = models.ForeignKey(
         'users.User',
         on_delete=models.CASCADE,
+        related_name='tickets'
     )
-    flight_seat = models.OneToOneField(
+    flight_seat = models.ForeignKey(
         'fleet.AirplaneSeat',
         on_delete=models.CASCADE,
     )
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'), message="Ticket price must be greater than 0.")]
     )
+
+    def clean(self):
+        super().clean()
+        if self.flight and self.flight_seat:
+            if self.flight.airplane != self.flight_seat.airplane:
+                raise ValidationError({
+                    'flight_seat': f"The selected seat does not belong to the plane ({self.flight.airplane.name}), who operates this flight"
+                })
+
+            duplicate_tickets = Ticket.objects.filter(
+                flight=self.flight,
+                flight_seat=self.flight_seat
+            )
+            if self.pk:
+                duplicate_tickets = duplicate_tickets.exclude(pk=self.pk)
+
+            if duplicate_tickets.exists():
+                raise ValidationError({
+                    'flight_seat': "Це місце на вибраний рейс уже заброньоване."
+                })
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['flight', 'flight_seat'], name='unique_flight_seat')
+        ]
+        ordering = ['id']
+
+    def __str__(self):
+        return f"Ticket {self.id} for Flight {self.flight.flight_number} (Seat {self.flight_seat.row}{self.flight_seat.seat})"

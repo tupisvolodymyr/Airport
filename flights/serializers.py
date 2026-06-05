@@ -1,6 +1,7 @@
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from flights.models import Flight, Booking, Ticket
-from fleet.serializers import *
+from fleet.serializers import AirportSerializer, AirplaneSerializer, AirlineSerializer
 
 
 class FlightSerializer(serializers.ModelSerializer):
@@ -12,21 +13,45 @@ class FlightSerializer(serializers.ModelSerializer):
             'airline', 'flight_status', 'created_at'
         ]
 
+    def validate(self, attrs):
+        instance = Flight(**attrs)
+        try:
+            instance.full_clean()
+        except ValidationError as e:
+            raise serializers.ValidationError(e.message_dict)
+        return attrs
+
+
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = [
-            'id', 'user_id', 'status', 'total_price', 'created_at'
+            'id', 'user', 'status', 'total_price', 'created_at'
         ]
+
+    def validate(self, attrs):
+        instance = Booking(**attrs)
+        try:
+            instance.full_clean()
+        except ValidationError as e:
+            raise serializers.ValidationError(e.message_dict)
+        return attrs
 
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = [
-            'id', 'flight_number', 'booking', 'passenger_name', 'price',
-            'flight_seat'
+            'id', 'flight', 'booking', 'user', 'price', 'flight_seat'
         ]
+
+    def validate(self, attrs):
+        instance = Ticket(**attrs)
+        try:
+            instance.full_clean()
+        except ValidationError as e:
+            raise serializers.ValidationError(e.message_dict)
+        return attrs
 
 
 class FlightListSerializer(FlightSerializer):

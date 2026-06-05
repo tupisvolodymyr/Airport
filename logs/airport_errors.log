@@ -1,0 +1,568 @@
+ERROR 2026-06-04 13:27:29,237 log 31210 6132543488 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/generic/base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 287, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 258, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 113, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1407, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1463, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1658, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 959, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1052, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 386, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1132, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1278, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1396, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `flight_number` is not valid for model `Ticket` in `flights.serializers.TicketSerializer`.
+ERROR 2026-06-04 13:27:29,241 log 31210 6132543488 "GET /api/schema/ HTTP/1.1" 500 176383
+ERROR 2026-06-04 13:27:29,331 log 31210 6132543488 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/generic/base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 287, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 258, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 113, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1407, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1463, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1658, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 959, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1052, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 386, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1132, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1278, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1396, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `flight_number` is not valid for model `Ticket` in `flights.serializers.TicketSerializer`.
+ERROR 2026-06-04 13:27:29,333 log 31210 6132543488 "GET /api/schema/ HTTP/1.1" 500 176383
+ERROR 2026-06-04 13:28:23,989 log 31274 6132740096 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/generic/base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 287, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 258, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 113, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1407, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1463, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1658, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 959, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1052, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 386, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1132, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1278, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1396, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `flight` is not valid for model `Flight` in `flights.serializers.FlightListSerializer`.
+ERROR 2026-06-04 13:28:23,994 log 31274 6132740096 "GET /api/schema/ HTTP/1.1" 500 180762
+ERROR 2026-06-04 13:28:24,068 log 31274 6132740096 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/generic/base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 287, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 258, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 113, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1407, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1463, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1658, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 959, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1052, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 386, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1132, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1278, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1396, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `flight` is not valid for model `Flight` in `flights.serializers.FlightListSerializer`.
+ERROR 2026-06-04 13:28:24,070 log 31274 6132740096 "GET /api/schema/ HTTP/1.1" 500 180762
+ERROR 2026-06-04 13:29:12,757 log 31274 6132740096 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/generic/base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 287, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 258, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 113, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1407, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1463, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1658, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 959, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1052, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 386, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1132, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1278, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1396, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `flight` is not valid for model `Flight` in `flights.serializers.FlightListSerializer`.
+ERROR 2026-06-04 13:29:12,761 log 31274 6132740096 "GET /api/schema/ HTTP/1.1" 500 180762
+ERROR 2026-06-04 13:29:12,849 log 31274 6132740096 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/generic/base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 287, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 258, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 113, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1407, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1463, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1658, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 959, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1052, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 386, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1132, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1278, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1396, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `flight` is not valid for model `Flight` in `flights.serializers.FlightListSerializer`.
+ERROR 2026-06-04 13:29:12,851 log 31274 6132740096 "GET /api/schema/ HTTP/1.1" 500 180762
+ERROR 2026-06-04 13:36:52,866 log 31378 6202208256 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/generic/base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 287, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 258, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 113, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1407, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1463, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1658, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 959, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1052, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 386, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1132, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1278, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1396, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `passenger_name` is not valid for model `Ticket` in `flights.serializers.TicketSerializer`.
+ERROR 2026-06-04 13:36:52,941 log 31378 6202208256 "GET /api/schema/ HTTP/1.1" 500 176844
+ERROR 2026-06-04 13:36:53,054 log 31378 6202208256 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/views/generic/base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 287, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/generators.py", line 258, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 113, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1407, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1463, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1658, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 959, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/drf_spectacular/openapi.py", line 1052, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 386, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1132, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1278, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vovatupis/PycharmProjects/Airport/.venv/lib/python3.14/site-packages/rest_framework/serializers.py", line 1396, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `passenger_name` is not valid for model `Ticket` in `flights.serializers.TicketSerializer`.
+ERROR 2026-06-04 13:36:53,056 log 31378 6202208256 "GET /api/schema/ HTTP/1.1" 500 176844
