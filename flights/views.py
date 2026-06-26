@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -15,7 +16,9 @@ from flights.serializers import (
 
 
 class FlightViewSet(viewsets.ModelViewSet):
-    queryset = Flight.objects.all()
+    queryset = Flight.objects.select_related(
+        'departure_airport', 'arrival_airport', 'airplane', 'airline'
+    )
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
@@ -92,12 +95,13 @@ class BookingViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        total = sum(ticket.price for ticket in tickets)
-        tickets.update(status=Ticket.TicketStatus.PAID)
+        with transaction.atomic():
+            total = sum(ticket.price for ticket in tickets)
+            tickets.update(status=Ticket.TicketStatus.PAID)
 
-        booking.total_price = total
-        booking.status = Booking.BookingStatus.CONFIRMED
-        booking.save(update_fields=['total_price', 'status'])
+            booking.total_price = total
+            booking.status = Booking.BookingStatus.CONFIRMED
+            booking.save(update_fields=['total_price', 'status'])
 
         return Response(BookingSerializer(booking).data, status=status.HTTP_200_OK)
 
@@ -111,9 +115,10 @@ class BookingViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        booking.tickets.update(status=Ticket.TicketStatus.CANCELLED)
-        booking.status = Booking.BookingStatus.CANCELLED
-        booking.save(update_fields=['status'])
+        with transaction.atomic():
+            booking.tickets.update(status=Ticket.TicketStatus.CANCELLED)
+            booking.status = Booking.BookingStatus.CANCELLED
+            booking.save(update_fields=['status'])
 
         return Response({'detail': "Booking and all tickets successfully cancelled."}, status=status.HTTP_200_OK)
 

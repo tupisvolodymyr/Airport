@@ -40,7 +40,7 @@ class Airport(models.Model):
 class Airplane(models.Model):
     name = models.CharField(max_length=125)
     model = models.CharField(max_length=125)
-    year = models.IntegerField()  # було DateField
+    year = models.IntegerField()
 
     rows = models.PositiveIntegerField()
     seats_per_row = models.PositiveIntegerField()
@@ -161,7 +161,7 @@ class Airline(models.Model):
             )
         ]
     )
-    founded_year = models.IntegerField()  # було DateField
+    founded_year = models.IntegerField()
     airport = models.ManyToManyField(
         'Airport',
         related_name='airlines',
