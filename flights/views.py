@@ -1,18 +1,24 @@
+import stripe
+from django.conf import settings
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from flights.models import Flight, Booking, Ticket
+from flights.models import Flight, Booking, Ticket, Payment
 from flights.permissions import IsOwnerOrAdmin
 from flights.serializers import (
     FlightSerializer,
     FlightListSerializer,
     BookingSerializer,
     TicketSerializer,
+    PaymentSerializer,
 )
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class FlightViewSet(viewsets.ModelViewSet):
@@ -105,6 +111,61 @@ class BookingViewSet(viewsets.ModelViewSet):
 
         return Response(BookingSerializer(booking).data, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['post'], url_path='checkout')
+    def checkout(self, request, pk=None):
+        booking = self.get_object()
+
+        if booking.status != Booking.BookingStatus.PENDING:
+            return Response(
+                {'detail': f"Cannot checkout booking with status '{booking.get_status_display()}'."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        tickets = booking.tickets.all()
+        if not tickets.exists():
+            return Response(
+                {'detail': "Cannot checkout empty booking. Please add at least one ticket."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if hasattr(booking, 'payment') and booking.payment.status == Payment.PaymentStatus.PENDING:
+            return Response(
+                {'detail': "Payment session already exists.", 'checkout_url': None},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        total = sum(ticket.price for ticket in tickets)
+        amount_cents = int(total * 100)
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': settings.STRIPE_CURRENCY,
+                    'unit_amount': amount_cents,
+                    'product_data': {
+                        'name': f"Booking #{booking.id}",
+                        'description': f"{tickets.count()} ticket(s) for your flight(s)",
+                    },
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=request.build_absolute_uri('/api/payments/success/'),
+            cancel_url=request.build_absolute_uri('/api/payments/cancel/'),
+            metadata={'booking_id': booking.id},
+        )
+
+        Payment.objects.create(
+            booking=booking,
+            stripe_session_id=session.id,
+            amount=total,
+            currency=settings.STRIPE_CURRENCY,
+            status=Payment.PaymentStatus.PENDING,
+        )
+
+        return Response({'checkout_url': session.url}, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['post'], url_path='cancel')
     def cancel(self, request, pk=None):
         booking = self.get_object()
@@ -132,3 +193,52 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
         if user.is_staff or user.role == 'Admin':
             return Ticket.objects.select_related('flight', 'flight_seat').all()
         return Ticket.objects.select_related('flight', 'flight_seat').filter(user=user)
+
+
+class StripeWebhookView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        payload = request.body
+        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+            )
+        except ValueError:
+            return Response({'detail': 'Invalid payload.'}, status=status.HTTP_400_BAD_REQUEST)
+        except stripe.error.SignatureVerificationError:
+            return Response({'detail': 'Invalid signature.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if event['type'] == 'checkout.session.completed':
+            session = event['data']['object']
+            self._handle_successful_payment(session)
+
+        return Response({'detail': 'ok'}, status=status.HTTP_200_OK)
+
+    def _handle_successful_payment(self, session):
+        try:
+            payment = Payment.objects.select_related('booking').get(
+                stripe_session_id=session['id']
+            )
+        except Payment.DoesNotExist:
+            return
+
+        if payment.status == Payment.PaymentStatus.SUCCEEDED:
+            return
+
+        with transaction.atomic():
+            payment.status = Payment.PaymentStatus.SUCCEEDED
+            payment.save(update_fields=['status'])
+
+            booking = payment.booking
+            tickets = booking.tickets.all()
+            total = sum(ticket.price for ticket in tickets)
+
+            tickets.update(status=Ticket.TicketStatus.PAID)
+
+            booking.total_price = total
+            booking.status = Booking.BookingStatus.CONFIRMED
+            booking.save(update_fields=['total_price', 'status'])

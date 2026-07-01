@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from flights.views import FlightViewSet, BookingViewSet, TicketViewSet
+from flights.views import FlightViewSet, BookingViewSet, TicketViewSet, StripeWebhookView
 
 
 router = DefaultRouter()
@@ -10,4 +10,5 @@ router.register('bookings', BookingViewSet, basename='booking')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('stripe/webhook/', StripeWebhookView.as_view(), name='stripe-webhook'),
 ]

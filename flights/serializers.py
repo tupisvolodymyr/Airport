@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from flights.models import Flight, Booking, Ticket
+from flights.models import Flight, Booking, Ticket, Payment
 from fleet.serializers import AirportSerializer, AirplaneSerializer, AirlineSerializer
 
 
@@ -32,6 +32,13 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = ['id', 'flight', 'flight_seat', 'booking', 'user', 'price']
         read_only_fields = ['booking', 'user', 'price']
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ['id', 'booking', 'amount', 'currency', 'status', 'created_at']
+        read_only_fields = ['id', 'booking', 'amount', 'currency', 'status', 'created_at']
 
 
 class TicketCreateSerializer(serializers.ModelSerializer):
