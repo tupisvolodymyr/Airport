@@ -21,3 +21,6 @@ ENV/
 .AppleDouble
 .LSOverride
 Icon
+
+
+logs/

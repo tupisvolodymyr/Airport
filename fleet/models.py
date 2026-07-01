@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
+
 class Airport(models.Model):
     name = models.CharField(max_length=125)
     iata_code = models.CharField(
@@ -11,10 +12,16 @@ class Airport(models.Model):
         validators=[
             RegexValidator(
                 regex=r'^[A-Z]{3}$',
-                message="IATA код аеропорту повинен складатися рівно з 3 великих латинських літер (наприклад, KBP, LWO)."
+                message="IATA the airport code must consist of exactly 3 capital Latin letters (for example, KBP, LWO)."
             )
         ]
     )
+
+    city = models.ForeignKey(
+        'locations.city', on_delete=models.PROTECT,
+        related_name='airports'
+    )
+
     def clean(self):
         if self.iata_code:
             self.iata_code = self.iata_code.upper()
@@ -23,21 +30,17 @@ class Airport(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    city = models.ForeignKey(
-        'locations.city', on_delete=models.PROTECT,
-        related_name='airports'
-    )
-
     class Meta:
         ordering = ['name']
 
     def __str__(self):
         return self.name + ' ' + self.iata_code
 
+
 class Airplane(models.Model):
     name = models.CharField(max_length=125)
     model = models.CharField(max_length=125)
-    year = models.DateTimeField()
+    year = models.IntegerField()
 
     rows = models.PositiveIntegerField()
     seats_per_row = models.PositiveIntegerField()
@@ -46,18 +49,18 @@ class Airplane(models.Model):
         'Airline',
         on_delete=models.CASCADE,
         related_name='airplanes',
-
     )
 
     def clean(self):
         super().clean()
 
         if self.year:
-            if self.year > timezone.now():
+            current_year = timezone.now().year
+            if self.year > current_year:
                 raise ValidationError({
-                    'year': "The release date of the aircraft cannot be in the future."
+                    'year': "The release year of the aircraft cannot be in the future."
                 })
-            if self.year.year < 1950:
+            if self.year < 1950:
                 raise ValidationError({
                     'year': "The year of manufacture cannot be earlier than 1950."
                 })
@@ -74,16 +77,12 @@ class Airplane(models.Model):
                 })
             if self.seats_per_row > 12:
                 raise ValidationError({
-                    'seats_per_row': "Максимальна кількість місць в одному ряду не може перевищувати 12."
+                    'seats_per_row': "The maximum number of seats in one row cannot exceed 12."
                 })
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
-
-
-
-
 
     def __str__(self):
         return f"{self.name} ({self.model}) - {self.year}"
@@ -150,7 +149,6 @@ class AirplaneSeat(models.Model):
         return f"{self.airplane.name} - Row {self.row}, Seat {self.seat}"
 
 
-
 class Airline(models.Model):
     name = models.CharField(max_length=250)
     iata_code = models.CharField(
@@ -159,27 +157,35 @@ class Airline(models.Model):
         validators=[
             RegexValidator(
                 regex=r'^[A-Z0-9]{2}$',
-                message="IATA код авіакомпанії повинен складатися рівно з 2 великих латинських літер або цифр (наприклад, UA, W6)."
+                message="IATA The airline code must consist of exactly 2 capital Latin letters or numbers (for example, UA, W6)."
             )
         ]
+    )
+    founded_year = models.IntegerField()
+    airport = models.ManyToManyField(
+        'Airport',
+        related_name='airlines',
+        blank=True,
     )
 
     def clean(self):
         super().clean()
         if self.iata_code:
             self.iata_code = self.iata_code.upper()
-
+        if self.founded_year:
+            current_year = timezone.now().year
+            if self.founded_year > current_year:
+                raise ValidationError({
+                    'founded_year': "Founded year cannot be in the future."
+                })
+            if self.founded_year < 1900:
+                raise ValidationError({
+                    'founded_year': "Founded year cannot be earlier than 1900."
+                })
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
-
-    founded_year = models.DateTimeField(blank=False, null=False)
-    airport = models.ManyToManyField(
-        'Airport',
-        related_name='airlines',
-        blank=True,
-    )
 
     def __str__(self):
         return self.name + ' ' + self.iata_code

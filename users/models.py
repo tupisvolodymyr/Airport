@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.db import models
 
+
 class User(AbstractUser):
     class Roles(models.TextChoices):
         ADMIN = 'Admin', 'admin'

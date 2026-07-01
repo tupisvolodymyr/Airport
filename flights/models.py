@@ -5,28 +5,14 @@ from django.utils import timezone
 from decimal import Decimal
 
 
-class FlightStatus(models.TextChoices):
-    SCHEDULED = 'SCHEDULED', 'scheduled'
-    BOARDING = 'BOARDING', 'boarding'
-    DEPARTED = 'DEPARTED', 'departed'
-    DELAYED = 'DELAYED', 'delayed'
-    CANCELLED = 'CANCELLED', 'cancelled'
-
-
-class BookingStatus(models.TextChoices):
-    PENDING = 'PENDING', 'pending'
-    CONFIRMED = 'CONFIRMED', 'confirmed'
-    CANCELLED = 'CANCELLED', 'cancelled'
-
-
-class TicketStatus(models.TextChoices):
-    BOOKED = 'BOOKED', 'booked'
-    USED = 'USED', 'used'
-    PAID = 'PAID', 'paid'
-    CANCELLED = 'CANCELLED', 'cancelled'
-
-
 class Flight(models.Model):
+    class FlightStatus(models.TextChoices):
+        SCHEDULED = 'SCHEDULED', 'scheduled'
+        BOARDING = 'BOARDING', 'boarding'
+        DEPARTED = 'DEPARTED', 'departed'
+        DELAYED = 'DELAYED', 'delayed'
+        CANCELLED = 'CANCELLED', 'cancelled'
+
     flight_number = models.CharField(max_length=10)
     departure_airport = models.ForeignKey(
         'fleet.Airport', on_delete=models.PROTECT,
@@ -81,7 +67,15 @@ class Flight(models.Model):
         return f"{self.flight_number}: {self.departure_airport.iata_code} -> {self.arrival_airport.iata_code}"
 
 
+
+
+
 class Booking(models.Model):
+    class BookingStatus(models.TextChoices):
+        PENDING = 'PENDING', 'pending'
+        CONFIRMED = 'CONFIRMED', 'confirmed'
+        CANCELLED = 'CANCELLED', 'cancelled'
+
     user = models.ForeignKey(
         'users.User', on_delete=models.CASCADE,
         related_name='bookings'
@@ -104,6 +98,12 @@ class Booking(models.Model):
 
 
 class Ticket(models.Model):
+    class TicketStatus(models.TextChoices):
+        BOOKED = 'BOOKED', 'booked'
+        USED = 'USED', 'used'
+        PAID = 'PAID', 'paid'
+        CANCELLED = 'CANCELLED', 'cancelled'
+
     flight = models.ForeignKey(
         'flights.Flight',
         on_delete=models.CASCADE,
@@ -121,7 +121,7 @@ class Ticket(models.Model):
     )
     flight_seat = models.ForeignKey(
         'fleet.AirplaneSeat',
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
     price = models.DecimalField(
         max_digits=10,
@@ -146,7 +146,7 @@ class Ticket(models.Model):
 
             if duplicate_tickets.exists():
                 raise ValidationError({
-                    'flight_seat': "Це місце на вибраний рейс уже заброньоване."
+                    'flight_seat': "This seat on the selected flight is already booked.."
                 })
 
     def save(self, *args, **kwargs):

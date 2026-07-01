@@ -3,8 +3,8 @@ from rest_framework.routers import DefaultRouter
 from locations.views import CityViewSet, CountryViewSet
 
 router = DefaultRouter()
-router.register('city', CityViewSet)
-router.register('country', CountryViewSet)
+router.register('cities', CityViewSet)
+router.register('countries', CountryViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
