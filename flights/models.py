@@ -128,6 +128,11 @@ class Ticket(models.Model):
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'), message="Ticket price must be greater than 0.")]
     )
+    status = models.CharField(
+        max_length=10,
+        choices=TicketStatus.choices,
+        default=TicketStatus.BOOKED
+    )
 
     def clean(self):
         super().clean()
