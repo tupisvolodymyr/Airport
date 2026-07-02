@@ -128,6 +128,11 @@ class Ticket(models.Model):
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'), message="Ticket price must be greater than 0.")]
     )
+    status = models.CharField(
+        max_length=10,
+        choices=TicketStatus.choices,
+        default=TicketStatus.BOOKED
+    )
 
     def clean(self):
         super().clean()
@@ -161,3 +166,28 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f"Ticket {self.id} for Flight {self.flight.flight_number} (Seat {self.flight_seat.row}{self.flight_seat.seat})"
+
+
+class Payment(models.Model):
+    class PaymentStatus(models.TextChoices):
+        PENDING   = 'PENDING',   'pending'
+        SUCCEEDED = 'SUCCEEDED', 'succeeded'
+        FAILED    = 'FAILED',    'failed'
+
+    booking = models.OneToOneField(
+        'flights.Booking',
+        on_delete=models.CASCADE,
+        related_name='payment'
+    )
+    stripe_session_id = models.CharField(max_length=255, unique=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=3, default='usd')
+    status = models.CharField(
+        max_length=10,
+        choices=PaymentStatus.choices,
+        default=PaymentStatus.PENDING
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment {self.id} for Booking {self.booking.id} ({self.status})"

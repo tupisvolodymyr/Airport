@@ -164,6 +164,15 @@ SPECTACULAR_SETTINGS = {
 
 AUTH_USER_MODEL = 'users.User'
 
+# -------------STRIPE SETTINGS-------------------
+import stripe
+
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
+STRIPE_CURRENCY = env('STRIPE_CURRENCY', default='usd')
+
+stripe.api_key = STRIPE_SECRET_KEY
+
 # -------------LOGGING SETTINGS-------------------
 CONSOLE_LOG_LEVEL = "DEBUG" if DEBUG else "INFO"
 
