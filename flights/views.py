@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -18,13 +18,16 @@ from flights.serializers import (
     PaymentSerializer,
 )
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
 
 class FlightViewSet(viewsets.ModelViewSet):
     queryset = Flight.objects.select_related(
         'departure_airport', 'arrival_airport', 'airplane', 'airline'
     )
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return [IsAdminUser()]
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
@@ -84,33 +87,6 @@ class BookingViewSet(viewsets.ModelViewSet):
 
         return Response({'detail': "Ticket successfully removed."}, status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['post'], url_path='confirm')
-    def confirm(self, request, pk=None):
-        booking = self.get_object()
-
-        if booking.status != Booking.BookingStatus.PENDING:
-            return Response(
-                {'detail': f"Booking already has status '{booking.get_status_display()}' and cannot be confirmed."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        tickets = booking.tickets.all()
-        if not tickets.exists():
-            return Response(
-                {'detail': "Cannot confirm empty booking. Please add at least one ticket."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        with transaction.atomic():
-            total = sum(ticket.price for ticket in tickets)
-            tickets.update(status=Ticket.TicketStatus.PAID)
-
-            booking.total_price = total
-            booking.status = Booking.BookingStatus.CONFIRMED
-            booking.save(update_fields=['total_price', 'status'])
-
-        return Response(BookingSerializer(booking).data, status=status.HTTP_200_OK)
-
     @action(detail=True, methods=['post'], url_path='checkout')
     def checkout(self, request, pk=None):
         booking = self.get_object()
@@ -128,11 +104,14 @@ class BookingViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if hasattr(booking, 'payment') and booking.payment.status == Payment.PaymentStatus.PENDING:
-            return Response(
-                {'detail': "Payment session already exists.", 'checkout_url': None},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        if hasattr(booking, 'payment'):
+            if booking.payment.status == Payment.PaymentStatus.SUCCEEDED:
+                return Response(
+                    {'detail': "This booking has already been paid."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            # Сесія ще не оплачена або протухла — видаляємо і створюємо нову
+            booking.payment.delete()
 
         total = sum(ticket.price for ticket in tickets)
         amount_cents = int(total * 100)
@@ -156,7 +135,7 @@ class BookingViewSet(viewsets.ModelViewSet):
             metadata={'booking_id': booking.id},
         )
 
-        Payment.objects.create(
+        payment = Payment.objects.create(
             booking=booking,
             stripe_session_id=session.id,
             amount=total,
@@ -164,7 +143,10 @@ class BookingViewSet(viewsets.ModelViewSet):
             status=Payment.PaymentStatus.PENDING,
         )
 
-        return Response({'checkout_url': session.url}, status=status.HTTP_200_OK)
+        return Response({
+            'checkout_url': session.url,
+            'payment': PaymentSerializer(payment).data,
+        }, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'], url_path='cancel')
     def cancel(self, request, pk=None):
@@ -173,6 +155,12 @@ class BookingViewSet(viewsets.ModelViewSet):
         if booking.status == Booking.BookingStatus.CANCELLED:
             return Response(
                 {'detail': "Booking is already cancelled."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if booking.status == Booking.BookingStatus.CONFIRMED:
+            return Response(
+                {'detail': "Cannot cancel a confirmed booking. Please contact support for refunds."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -216,6 +204,12 @@ class StripeWebhookView(APIView):
             session = event['data']['object']
             self._handle_successful_payment(session)
 
+        elif event['type'] == 'checkout.session.expired':
+            session = event['data']['object']
+            Payment.objects.filter(
+                stripe_session_id=session['id']
+            ).update(status=Payment.PaymentStatus.FAILED)
+
         return Response({'detail': 'ok'}, status=status.HTTP_200_OK)
 
     def _handle_successful_payment(self, session):
@@ -242,3 +236,23 @@ class StripeWebhookView(APIView):
             booking.total_price = total
             booking.status = Booking.BookingStatus.CONFIRMED
             booking.save(update_fields=['total_price', 'status'])
+
+
+class PaymentSuccessView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response(
+            {'detail': 'Payment successful. Your booking is confirmed.'},
+            status=status.HTTP_200_OK
+        )
+
+
+class PaymentCancelView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response(
+            {'detail': 'Payment cancelled. Your booking is still pending.'},
+            status=status.HTTP_200_OK
+        )
